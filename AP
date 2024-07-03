@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentação APDU</title>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.6;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    h1, h2, h3 {
+        color: #333;
+    }
+    code {
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .command {
+        color: #007bff;
+    }
+    .response {
+        color: #28a745;
+    }
+</style>
+</head>
+<body>
+
+<h1>Documentação APDU</h1>
+
+<h2>Comandos APDU</h2>
+
+<h3>SELECT_PPSE</h3>
+<code class="command">SELECT_PPSE = "00A404000E325041592E5359532E444446303100"</code>
+<p>
+    O comando <code>SELECT_PPSE</code> é usado para selecionar o Serviço de Seleção de Aplicação do Provedor (PPSE).
+    <br>
+    <ul>
+        <li><code>00</code>: Byte inicial do comando APDU.</li>
+        <li><code>A404</code>: Código de instrução para SELECT.</li>
+        <li><code>000E</code>: Comprimento dos dados a seguir (14 bytes).</li>
+        <li><code>325041592E5359532E4444463031</code>: Identificador do PPSE.</li>
+        <li><code>00</code>: Byte de finalização do comando APDU.</li>
+    </ul>
+</p>
+
+<h3>SELECT_MSD</h3>
+<code class="command">SELECT_MSD = "00A4040007{AID}00"</code>
+<p>
+    Comando utilizado para selecionar um Aplicativo de Pagamento Móvel (MSD), onde <code>{AID}</code> é o Identificador do Aplicativo.
+    <br>
+    <ul>
+        <li><code>00</code>: Byte inicial do comando APDU.</li>
+        <li><code>A404</code>: Código de instrução para SELECT.</li>
+        <li><code>0007</code>: Comprimento dos dados a seguir (7 bytes).</li>
+        <li><code>{AID}</code>: Identificador do Aplicativo (substituído dinamicamente).</li>
+        <li><code>00</code>: Byte de finalização do comando APDU.</li>
+    </ul>
+</p>
+
+<h3>GET_PROCESSING_OPTIONS</h3>
+<code class="command">GET_PROCESSING_OPTIONS = "80A80000048302800000"</code>
+<p>
+    Este comando é usado para obter as opções de processamento disponíveis para o cartão.
+    <br>
+    <ul>
+        <li><code>80</code>: Byte inicial do comando APDU (comando do tipo interno).</li>
+        <li><code>A8000004</code>: Código de instrução para GET PROCESSING OPTIONS.</li>
+        <li><code>8302800000</code>: Dados específicos para o comando.</li>
+    </ul>
+</p>
+
+<h3>READ_RECORD</h3>
+<code class="command">READ_RECORD = "00B2010C00"</code>
+<p>
+    Comando utilizado para ler um registro de dados do cartão.
+    <br>
+    <ul>
+        <li><code>00</code>: Byte inicial do comando APDU.</li>
+        <li><code>B2</code>: Código de instrução para READ RECORD.</li>
+        <li><code>010C</code>: P1 e P2 - parâmetros que especificam o registro a ser lido.</li>
+        <li><code>00</code>: Byte de finalização do comando APDU.</li>
+    </ul>
+</p>
+
+<h2>Respostas APDU Correspondentes</h2>
+
+<h3>PPSE_RESPONSE</h3>
+<code class="response">PPSE_RESPONSE = "6F23840E325041592E5359532E4444463031A511BF0C0E610C4F07{AID}8701019000"</code>
+<p>
+    Resposta APDU que retorna informações sobre o PPSE, incluindo o <code>{AID}</code> do aplicativo encontrado.
+    <br>
+    <ul>
+        <li><code>6F</code>: Byte inicial da resposta APDU.</li>
+        <li><code>23</code>: Comprimento dos dados a seguir (35 bytes).</li>
+        <li><code>84</code>: Tag para indicação de dados.</li>
+        <li><code>0E325041592E5359532E4444463031</code>: Identificador do PPSE.</li>
+        <li><code>A5</code>: Tag para informações específicas adicionais.</li>
+        <li><code>11BF0C0E610C4F07</code>: Dados adicionais.</li>
+        <li><code>{AID}</code>: Identificador do Aplicativo (substituído dinamicamente).</li>
+        <li><code>87</code>: Tag para indicação de dados.</li>
+        <li><code>01019000</code>: Código de status indicando sucesso.</li>
+    </ul>
+</p>
+
+<h3>MSD_SELECT_RESPONSE</h3>
+<code class="response">MSD_SELECT_RESPONSE = "6F1E8407{AID}A513500B56495341204352454449549F38039F66029000"</code>
+<p>
+    Resposta APDU após a seleção do MSD, com informações específicas do aplicativo selecionado.
+    <br>
+    <ul>
+        <li><code>6F</code>: Byte inicial da resposta APDU.</li>
+        <li><code>1E</code>: Comprimento dos dados a seguir (30 bytes).</li>
+        <li><code>84</code>: Tag para indicação de dados.</li>
+        <li><code>07</code>: Tag para informações específicas adicionais.</li>
+        <li><code>{AID}</code>: Identificador do Aplicativo (substituído dinamicamente).</li>
+        <li><code>A5</code>: Tag para informações específicas adicionais.</li>
+        <li><code>13500B56495341204352454449549F38039F6602</code>: Dados adicionais.</li>
+        <li><code>9000</code>: Código de status indicando sucesso.</li>
+    </ul>
+</p>
+
+<h3>GPO_RESPONSE</h3>
+<code class="response">GPO_RESPONSE = "80060080080101009000"</code>
+<p>
+    Resposta APDU contendo as opções de processamento obtidas pelo comando GET_PROCESSING_OPTIONS.
+    <br>
+    <ul>
+        <li><code>80</code>: Byte inicial da resposta APDU (comando do tipo interno).</li>
+        <li><code>06</code>: Comprimento dos dados a seguir (6 bytes).</li>
+        <li><code>008008010100</code>: Dados específicos sobre as opções de processamento.</li>
+        <li><code>9000</code>: Código de status indicando sucesso.</li>
+    </ul>
+</p>
+
+<h3>READ_RECORD_RESPONSE</h3>
+<code class="response">READ_RECORD_RESPONSE = "70155713{CARD}D{ANO}{MES}{SERVICO}0000018100000F9000"</code>
+<p>
+    Resposta APDU que contém os dados lidos do registro do cartão.
+    <br>
+    <ul>
+        <li><code>70</code>: Byte inicial da resposta APDU.</li>
+        <li><code>15</code>: Comprimento dos dados a seguir (21 bytes).</li>
+        <li><code>57</code>: Tag para indicação de dados.</li>
+        <li><code>13{CARD}D{ANO}{MES}{SERVICO}</code>: Dados específicos lidos do registro do cartão.</li>
+        <li><code>0000018100000F</code>: Dados adicionais.</li>
+        <li><code>9000</code>: Código de status indicando sucesso.</li>
+    </ul>
+</p>
+
+</body>
+</html>
